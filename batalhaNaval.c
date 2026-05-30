@@ -18,6 +18,10 @@ int main() {
     int navioHorizontal[3] = {3, 3, 3};
     int navioVertical[3] = {3, 3, 3};
 
+    // Vetores que representam os navios diagonais
+    int navioDiagonalPrincipal[3] = {3, 3, 3};
+    int navioDiagonalSecundaria[3] = {3, 3, 3};
+
     // Variáveis de controle dos loops
     int linha, coluna;
 
@@ -28,6 +32,14 @@ int main() {
     // Coordenadas iniciais do navio vertical
     int linhaVertical = 5;
     int colunaVertical = 7;
+
+    // Coordenadas iniciais do navio diagonal principal
+    int LinhaDiagonalPrincipal = 0;
+    int colunaDiagonalPrincipal = 5;
+
+    // Coordenadas iniciais do navio diagonal secundária
+    int linhaDiagonalSecundaria = 7;
+    int colunaDiagonalSecundaria = 2;
 
     // Variável utilizada para validar o posicionamento
     int posicionamentoValido = 1;
@@ -46,6 +58,18 @@ int main() {
 
     // Verifica se o navio vertical cabe dentro do tabuleiro
     if (linhaVertical + 3 > 10) {
+        posicionamentoValido = 0;
+    }
+
+    // Verifica se o navio diagonal principal cabe dentro do tabuleiro
+    if (LinhaDiagonalPrincipal + 3 > 10 ||
+    colunaDiagonalPrincipal + 3 > 10) {
+        posicionamentoValido = 0;
+    }
+
+    // Verifica se o navio diagonal secundária cabe dentro do tabuleiro
+    if (linhaDiagonalSecundaria - 2 < 0 ||
+    colunaDiagonalSecundaria + 3 > 10) {
         posicionamentoValido = 0;
     }
 
@@ -74,6 +98,44 @@ int main() {
         }
     }
 
+    // Verifica sobreposição do navio diagonal principal
+    if (posicionamentoValido) {
+        for (linha = 0; linha < 3; linha++) {
+            if (tabuleiro[LinhaDiagonalPrincipal + linha]
+                         [colunaDiagonalPrincipal + linha] == 3) {
+                            posicionamentoValido = 0;
+            }
+        }
+    }
+
+    // Posiciona o navio diagonal principal
+    if (posicionamentoValido) {
+        for (linha = 0; linha < 3; linha++) {
+            tabuleiro[LinhaDiagonalPrincipal + linha]
+                     [colunaDiagonalPrincipal + linha] =
+                navioDiagonalPrincipal[linha];
+        }
+    }
+
+    // Verifica sobreposição do navio diagonal secundária
+    if (posicionamentoValido) {
+        for (linha = 0; linha < 3; linha++) {
+        if (tabuleiro[linhaDiagonalSecundaria - linha]
+                     [colunaDiagonalSecundaria + linha] == 3) {
+                     posicionamentoValido = 0;
+            }  
+        }
+    }
+
+    // Posiciona o navio diagonal secundária
+    if (posicionamentoValido) {
+        for (linha = 0; linha < 3; linha++) {
+            tabuleiro[linhaDiagonalSecundaria - linha]
+                     [colunaDiagonalSecundaria + linha] =
+                navioDiagonalSecundaria[linha];
+        }
+    }
+
     // Exibe as coordenadas do navio horizontal
     printf("Coordenadas do Navio Horizontal:\n");
     for (coluna = 0; coluna < 3; coluna++) {
@@ -90,6 +152,22 @@ int main() {
             colunaVertical);
     }
 
+    // Exibe coordenadas do navio diagonal principal
+    printf("\nCoordenadas do Navio Diagonal Principal:\n");
+    for (linha = 0; linha < 3; linha++) {
+        printf("(%d, %d)\n",
+            LinhaDiagonalPrincipal + linha,
+            colunaDiagonalPrincipal + linha);
+    }
+
+    // Exibe coordenadas do navio diagonal secundária
+    printf("\nCoordenadas do Navio Diagonal Secundária:\n");
+    for (linha = 0; linha < 3; linha++) {
+    printf("(%d, %d)\n",
+            linhaDiagonalSecundaria - linha,
+            colunaDiagonalSecundaria + linha);
+    }
+
     // Exibe mensagem caso haja erro no posicionamento
     if (!posicionamentoValido) {
         printf("\nErro: os navios possuem coordenadas invalidas ou estao sobrepostos.\n");
@@ -99,10 +177,24 @@ int main() {
     // Exibe o tabuleiro completo
     printf("\nTabuleiro Batalha Naval:\n\n");
 
-    for(linha = 0; linha < 10; linha++) {
-        for (coluna = 0; coluna < 10; coluna ++) {
+    // Exibe  o cabeçalho das colunas
+    printf ("  ");
+    for(coluna = 0; coluna < 10; coluna++) {
+        printf("%c ", 'A' + coluna);
+        }
+        printf("\n");
+
+    // Exibe as linhas numeradas e o conteúdo do tabuleiro
+    for (linha = 0; linha < 10; linha++) {
+
+        // Exibe o número da linha
+        printf("%2d ", linha + 1);
+
+        // Exibe os valores da linha
+        for (coluna = 0; coluna < 10; coluna++) {
             printf("%d ", tabuleiro[linha][coluna]);
         }
+
         printf("\n");
     }
     
