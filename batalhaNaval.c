@@ -34,7 +34,7 @@ int main() {
     int colunaVertical = 7;
 
     // Coordenadas iniciais do navio diagonal principal
-    int LinhaDiagonalPrincipal = 0;
+    int linhaDiagonalPrincipal = 0;
     int colunaDiagonalPrincipal = 5;
 
     // Coordenadas iniciais do navio diagonal secundária
@@ -43,6 +43,28 @@ int main() {
 
     // Variável utilizada para validar o posicionamento
     int posicionamentoValido = 1;
+
+    // Matrizes das habilidades especiais
+    int cone[5][5];
+    int cruz[5][5];
+    int octaedro[5][5];
+
+    // Pontos de origem das habilidades
+    int origemConeLinha = 1;
+    int origemConeColuna = 1;
+
+    int origemCruzLinha = 4;
+    int origemCruzColuna = 4;
+
+    int origemOctaedroLinha = 7;
+    int origemOctaedroColuna = 7;
+    
+    // Variáveis auxiliares
+    int i, j;
+
+    // Coordenadas temporárias para sobreposição
+    int linhaTabuleiro;
+    int colunaTabuleiro;
 
     // Inicializa todo o tabuleiro com água (valor 0)
     for (linha = 0; linha < 10; linha++) {
@@ -62,12 +84,12 @@ int main() {
     }
 
     // Verifica se o navio diagonal principal cabe dentro do tabuleiro
-    if (LinhaDiagonalPrincipal + 3 > 10 ||
+    if (linhaDiagonalPrincipal + 3 > 10 ||
     colunaDiagonalPrincipal + 3 > 10) {
         posicionamentoValido = 0;
     }
 
-    // Verifica se o navio diagonal secundária cabe dentro do tabuleiro
+    // Verifica se o navio diagonal secundário cabe dentro do tabuleiro
     if (linhaDiagonalSecundaria - 2 < 0 ||
     colunaDiagonalSecundaria + 3 > 10) {
         posicionamentoValido = 0;
@@ -101,7 +123,7 @@ int main() {
     // Verifica sobreposição do navio diagonal principal
     if (posicionamentoValido) {
         for (linha = 0; linha < 3; linha++) {
-            if (tabuleiro[LinhaDiagonalPrincipal + linha]
+            if (tabuleiro[linhaDiagonalPrincipal + linha]
                          [colunaDiagonalPrincipal + linha] == 3) {
                             posicionamentoValido = 0;
             }
@@ -111,7 +133,7 @@ int main() {
     // Posiciona o navio diagonal principal
     if (posicionamentoValido) {
         for (linha = 0; linha < 3; linha++) {
-            tabuleiro[LinhaDiagonalPrincipal + linha]
+            tabuleiro[linhaDiagonalPrincipal + linha]
                      [colunaDiagonalPrincipal + linha] =
                 navioDiagonalPrincipal[linha];
         }
@@ -136,6 +158,126 @@ int main() {
         }
     }
 
+    // Nivel mestre - criação das habilidades
+
+    // Inicializa as matrizes das habilidades com 0
+    for (i = 0; i < 5; i++) {
+        for(j = 0; j < 5; j++) {
+            cone[i][j] = 0;
+            cruz[i][j] = 0;
+            octaedro[i][j] = 0;
+        }
+    }
+
+    // Habilidade Cone
+    for (i = 0; i < 5; i++) {
+        for(j = 0; j < 5; j++) {
+
+            if (i == 0 && j == 2 )
+                cone[i][j] = 1;
+
+            if (i == 1 && j >= 1 && j <= 3)
+                cone[i][j] = 1;
+
+            if (i == 2)
+                cone[i][j] = 1;
+        }
+    }
+
+    // Habilidade Cruz
+    for (i = 0; i < 5; i++) {
+        for (j = 0; j < 5; j++) {
+
+            if (i == 2 || j == 2)
+                cruz[i][j] = 1;
+        }
+    }
+
+    // Habilidade Octaedro (losango)
+    for (i = 0; i < 5; i++) {
+        for (j = 0; j < 5; j++) {
+
+            if ((i == 0 && j == 2) ||
+               (i == 1 && j >= 1 && j <= 3) ||
+               (i == 2) ||
+               (i == 3 && j >= 1 && j <= 3) ||
+               (i == 4 && j == 2)) {
+
+               octaedro[i][j] = 1;
+            } 
+        }
+    }
+
+    // Sobreposição da Habilidade Cone
+
+    for (i = 0; i < 5; i++) {
+        for (j = 0; j < 5; j++) {
+
+            linhaTabuleiro = 
+                origemConeLinha + (i - 2);
+            
+            colunaTabuleiro = 
+                origemConeColuna + (j - 2);
+
+            if (cone[i][j] == 1 &&
+                linhaTabuleiro >= 0 &&
+                linhaTabuleiro < 10 &&
+                colunaTabuleiro >= 0 &&
+                colunaTabuleiro < 10 &&
+                tabuleiro[linhaTabuleiro][colunaTabuleiro] == 0) {
+
+                tabuleiro[linhaTabuleiro][colunaTabuleiro] = 5;
+            }
+        }
+    }
+
+    // Sobreposição da Habilidade Cruz
+
+    for (i = 0; i < 5; i++) {
+        for (j = 0; j < 5; j++) {
+
+            linhaTabuleiro = 
+                origemCruzLinha + (i - 2);
+
+            colunaTabuleiro = 
+                origemCruzColuna + (j - 2);
+
+            if (cruz[i][j] == 1 &&
+               linhaTabuleiro >= 0 &&
+               linhaTabuleiro < 10 &&
+               colunaTabuleiro >= 0 &&
+               colunaTabuleiro < 10 &&
+               tabuleiro[linhaTabuleiro][colunaTabuleiro] == 0) {
+
+               tabuleiro[linhaTabuleiro][colunaTabuleiro] = 5;
+            }
+        }
+    }
+
+    // Sobreposição da Habilidade Octaedro
+
+    for (i = 0; i < 5; i ++) {
+        for (j = 0; j < 5; j++) {
+
+            linhaTabuleiro =
+                origemOctaedroLinha + (i - 2);
+
+            colunaTabuleiro = 
+                origemOctaedroColuna + (j - 2);
+            
+            if (octaedro[i][j] == 1 &&
+               linhaTabuleiro >= 0 &&
+               linhaTabuleiro < 10 &&
+               colunaTabuleiro >= 0 &&
+               colunaTabuleiro < 10 &&
+               tabuleiro[linhaTabuleiro][colunaTabuleiro] == 0) {
+
+               tabuleiro[linhaTabuleiro][colunaTabuleiro] = 5;
+            }
+        }
+    }
+
+
     // Exibe as coordenadas do navio horizontal
     printf("Coordenadas do Navio Horizontal:\n");
     for (coluna = 0; coluna < 3; coluna++) {
@@ -156,7 +298,7 @@ int main() {
     printf("\nCoordenadas do Navio Diagonal Principal:\n");
     for (linha = 0; linha < 3; linha++) {
         printf("(%d, %d)\n",
-            LinhaDiagonalPrincipal + linha,
+            linhaDiagonalPrincipal + linha,
             colunaDiagonalPrincipal + linha);
     }
 
@@ -174,11 +316,16 @@ int main() {
         return 1;
     }
 
+    printf("\nLegenda:\n");
+    printf("~ = Agua\n");
+    printf("N = Navio\n");
+    printf("* = Area de Habilidade\n\n");
+        
     // Exibe o tabuleiro completo
     printf("\nTabuleiro Batalha Naval:\n\n");
 
     // Exibe  o cabeçalho das colunas
-    printf ("  ");
+    printf("  ");
     for(coluna = 0; coluna < 10; coluna++) {
         printf("%c ", 'A' + coluna);
         }
@@ -192,7 +339,16 @@ int main() {
 
         // Exibe os valores da linha
         for (coluna = 0; coluna < 10; coluna++) {
-            printf("%d ", tabuleiro[linha][coluna]);
+            
+            if (tabuleiro[linha][coluna] == 0) {
+                printf("~ ");
+            }
+            else if (tabuleiro[linha][coluna] == 3) {
+                printf("N ");
+            }
+            else if (tabuleiro[linha][coluna] == 5) {
+                printf("* ");
+            }
         }
 
         printf("\n");
